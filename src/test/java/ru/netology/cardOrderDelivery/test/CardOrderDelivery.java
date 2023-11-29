@@ -1,9 +1,9 @@
 package ru.netology.cardOrderDelivery.test;
 
 import com.codeborne.selenide.Condition;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.Keys;
 import ru.netology.cardOrderDelivery.data.DataGenerator;
 
@@ -14,6 +14,16 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
 public class CardOrderDelivery {
+
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
+    @AfterAll
+    static void tearDownAll() {
+        SelenideLogger.removeListener("allure");
+    }
+
     @BeforeEach
     void setup() {
         open("http://localhost:9999");
@@ -42,22 +52,14 @@ public class CardOrderDelivery {
         $("[data-test-id='date'] input").setValue(secondMeetingDate);
         $("button.button").click();
         $(byText("У вас уже запланирована встреча на другую дату. Перепланировать?"))
-        //$("[data-test-id='replan-notification'] .notification__content")
-               // .shouldHave(Condition.exactText("У вас уже запланирована встреча на другую дату. Перепланировать? Перепланировать"))!!! - тут подхватывает весь текст с бейджа,поэтому использовал поиск по тексту
+                //$("[data-test-id='replan-notification'] .notification__content")
+                // .shouldHave(Condition.exactText("У вас уже запланирована встреча на другую дату. Перепланировать? Перепланировать"))!!! - тут подхватывает весь текст с бейджа,поэтому использовал поиск по тексту
                 .shouldBe(Condition.visible);
         $("[data-test-id='replan-notification'] button").click();
         $("[data-test-id='success-notification'] .notification__content")
                 .shouldHave(Condition.exactText("Встреча успешно запланирована на " + secondMeetingDate))
-                .shouldBe(Condition.visible );
+                .shouldBe(Condition.visible);
 
 
-
-
-
-        // TODO: добавить логику теста в рамках которого будет выполнено планирование и перепланирование встречи.
-        // Для заполнения полей формы можно использовать пользователя validUser и строки с датами в переменных
-        // firstMeetingDate и secondMeetingDate. Можно также вызывать методы generateCity(locale),
-        // generateName(locale), generatePhone(locale) для генерации и получения в тесте соответственно города,
-        // имени и номера телефона без создания пользователя в методе generateUser(String locale) в датагенераторе
     }
 }
